@@ -46,6 +46,8 @@ function KPICollator() {
     setEcUnionArr(allECUnion)
 
     getRightTool(ecUnionArr)
+    getRightLibrary(ecUnionArr)
+    getRightLedger(ecUnionArr)
   }
 
   const addResult = (result) => {
@@ -114,13 +116,56 @@ function KPICollator() {
       if (validTool) {
         validTool.push(key)
         validTools.push(validTool)
-        console.log('RIGHT KEY', key);
+        // console.log('RIGHT KEY', key);
       }
     }
 
     validTools.sort((a, b) => a[1] - b[1])
 
     console.log("VALID TOOLS", validTools);
+
+  }
+
+
+  const getRightLibrary = (ecUnionArr) => {
+
+    console.log("EC UNION", ecUnionArr);
+
+    const validLibraries = []
+
+    for (let key in libraries) {
+      const validLibrary = isSubset(libraries[key], ecUnionArr)
+      // console.log("SSSSS", validTool);
+      if (validLibrary) {
+        validLibrary.push(key)
+        validLibraries.push(validLibrary)
+      }
+    }
+
+    validLibraries.sort((a, b) => a[1] - b[1])
+
+    console.log("VALID LIBRARIES", validLibraries);
+
+  }
+
+  const getRightLedger = (ecUnionArr) => {
+
+    console.log("EC UNION", ecUnionArr);
+
+    const validLedgers = []
+
+    for (let key in ledgers) {
+      const validLedger = isSubset(ledgers[key], ecUnionArr)
+      // console.log("SSSSS", validTool);
+      if (validLedger) {
+        validLedger.push(key)
+        validLedgers.push(validLedger)
+      }
+    }
+
+    validLedgers.sort((a, b) => a[1] - b[1])
+
+    console.log("VALID LEDGER", validLedgers);
 
   }
 
