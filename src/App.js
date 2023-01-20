@@ -1,24 +1,30 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import KPICollator from './components/KPICollator';
+// import KPIs from './components/KPIs';
+// import { kpis } from './components/bct_use_cases';
 
 function App() {
+
+  // const keys = Object.keys(kpis)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <KPICollator />
+
+      {/* <KPIs kpiGroup={kpis[keys[0]]} groupName={keys[0]} /> */}
+
+      {/* {keys.map((kpigroup, index) => {
+
+        // console.log(kpigroup);
+        return (
+          <KPIs key={index} kpiGroup={kpis[kpigroup]} groupName={kpigroup} />
+        )
+      })} */}
+
     </div>
+
+
   );
 }
 
