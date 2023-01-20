@@ -8,8 +8,8 @@ function KPICollator() {
   const allECs = ["EC1", "EC2", "EC3", "EC4", "EC5", "EC6", "EC7", "EC8", "EC9", "EC10", "EC11"]
   const keys = Object.keys(kpis)
   const [results, setResults] = useState({})
-  const [resultsWithSum, setResultsWithSum] = useState({})
-  const [ecUnionArr, setEcUnionArr] = useState([])
+  const resultsWithSum = {}
+  // const [ecUnionArr, setEcUnionArr] = useState([])
   
 
   const computeSum = (arg) => {
@@ -36,6 +36,8 @@ function KPICollator() {
   const handleGetResult = () => {
 
     const allECUnion = getECUnion()
+
+    console.log("IN HANDLE GET RESULT AFTER CALLING GETECUNION", allECUnion);
     for (let key in results) {
 
       if (Object.keys(results[key]).length !== 0) {
@@ -43,11 +45,11 @@ function KPICollator() {
         resultsWithSum[key] = res
       }
     }
-    setEcUnionArr(allECUnion)
+    // setEcUnionArr(allECUnion)
 
-    getRightTool(ecUnionArr)
-    getRightLibrary(ecUnionArr)
-    getRightLedger(ecUnionArr)
+    getRightTool(allECUnion)
+    getRightLibrary(allECUnion)
+    getRightLedger(allECUnion)
   }
 
   const addResult = (result) => {
@@ -104,14 +106,14 @@ function KPICollator() {
     }
   }
 
-  const getRightTool = (ecUnionArr) => {
+  const getRightTool = (arg) => {
 
-    console.log("EC UNION", ecUnionArr);
+    console.log("EC UNION", arg);
 
     const validTools = []
 
     for (let key in tools) {
-      const validTool = isSubset(tools[key], ecUnionArr)
+      const validTool = isSubset(tools[key], arg)
       // console.log("SSSSS", validTool);
       if (validTool) {
         validTool.push(key)
@@ -126,15 +128,12 @@ function KPICollator() {
 
   }
 
-
-  const getRightLibrary = (ecUnionArr) => {
-
-    console.log("EC UNION", ecUnionArr);
+  const getRightLibrary = (arg) => {
 
     const validLibraries = []
 
     for (let key in libraries) {
-      const validLibrary = isSubset(libraries[key], ecUnionArr)
+      const validLibrary = isSubset(libraries[key], arg)
       // console.log("SSSSS", validTool);
       if (validLibrary) {
         validLibrary.push(key)
@@ -148,14 +147,12 @@ function KPICollator() {
 
   }
 
-  const getRightLedger = (ecUnionArr) => {
-
-    console.log("EC UNION", ecUnionArr);
+  const getRightLedger = (arg) => {
 
     const validLedgers = []
 
     for (let key in ledgers) {
-      const validLedger = isSubset(ledgers[key], ecUnionArr)
+      const validLedger = isSubset(ledgers[key], arg)
       // console.log("SSSSS", validTool);
       if (validLedger) {
         validLedger.push(key)
