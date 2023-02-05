@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {kpis} from './bct_use_cases';
 import KPIs from './KPIs';
 import{libraries, tools, ledgers} from './bct_techs'
+import Result from './result';
+import GenInfo from './genInfo';
 
 function KPICollator() {
 
@@ -9,8 +11,31 @@ function KPICollator() {
   const keys = Object.keys(kpis)
   const [results, setResults] = useState({})
   const resultsWithSum = {}
+  const [validTools, setValidTools] = useState(null)
+  const [validLedgers, setValidLedgers] = useState(null)
+  const [validLibraries, setValidLibraries] = useState(null)
+  const [allECSum, setAllECSum] = useState ({})
   // const [ecUnionArr, setEcUnionArr] = useState([])
   
+  // console.log('RES WITHSUM', resultsWithSum);
+
+  console.log("ALL EC SUMMM", allECSum);
+
+  const getAllECSums = (arg) => {
+    const ecSums = {}
+    allECs.forEach(each => {
+      ecSums[each] = 0
+    })
+    for (let key in arg) {
+      console.log("TEST", arg[key]['sums']);
+      for (let ec in arg[key]['sums']) {
+        ecSums[ec] += arg[key]['sums'][ec]
+      }
+    }
+
+    setAllECSum(ecSums)
+    console.log("GEN EC SUM", ecSums);
+  }
 
   const computeSum = (arg) => {
 
@@ -37,7 +62,7 @@ function KPICollator() {
 
     const allECUnion = getECUnion()
 
-    console.log("IN HANDLE GET RESULT AFTER CALLING GETECUNION", allECUnion);
+    // console.log("IN HANDLE GET RESULT AFTER CALLING GETECUNION", allECUnion);
     for (let key in results) {
 
       if (Object.keys(results[key]).length !== 0) {
@@ -50,6 +75,10 @@ function KPICollator() {
     getRightTool(allECUnion)
     getRightLibrary(allECUnion)
     getRightLedger(allECUnion)
+    getAllECSums(resultsWithSum)
+
+
+    // console.log("RES WITH SUM", resultsWithSum);
   }
 
   const addResult = (result) => {
@@ -95,9 +124,8 @@ function KPICollator() {
     if (s.size === p)
     {
       let lengthDiff = m - n
-      // console.log(`${ecs} is subset of ${tool} with ${lengthDiff} difference`);
-      // console.log(true, lengthDiff);
-      return [true, lengthDiff]
+      
+      return [lengthDiff]
     }
     else
     {
@@ -124,6 +152,7 @@ function KPICollator() {
 
     validTools.sort((a, b) => a[1] - b[1])
 
+    setValidTools((validTools.length > 0) ? validTools: null)
     console.log("VALID TOOLS", validTools);
 
   }
@@ -143,6 +172,7 @@ function KPICollator() {
 
     validLibraries.sort((a, b) => a[1] - b[1])
 
+    setValidLibraries((validLibraries.length > 0) ? validLibraries: null)
     console.log("VALID LIBRARIES", validLibraries);
 
   }
@@ -162,6 +192,7 @@ function KPICollator() {
 
     validLedgers.sort((a, b) => a[1] - b[1])
 
+    setValidLedgers((validLedgers.length > 0) ? validLedgers: null)
     console.log("VALID LEDGER", validLedgers);
 
   }
@@ -179,6 +210,25 @@ function KPICollator() {
       })}
 
       <button onClick={handleGetResult}>Get Appropriate tool</button>
+
+     
+
+      <section>
+
+        <GenInfo allECSum={allECSum} />
+
+        {validLedgers ? <Result title={"VALID LEDGER(S)"} res={validLedgers} /> : <h3>NO VALID LEDGER</h3>}
+
+        {validTools ? <Result title={"VALID TOOL(S)"} res={validTools} /> : <h3>NO VALID TOOL</h3>}
+
+        {validLibraries ? <Result title={"VALID LIBRARY(IES)"} res={validLibraries} /> : <h3>NO VALID LIBRARY</h3>}
+
+
+      </section>
+
+      
+
+      {/* {(validLedgers || validLibraries || validTools) && <Result tools={validTools} libraries={validLibraries} ledgers={validLedgers} results={resultsWithSum} />} */}
     </div>
   )
 }
