@@ -217,11 +217,11 @@ function KPICollator() {
 
         <GenInfo allECSum={allECSum} />
 
-        {validLedgers ? <Result title={"VALID LEDGER(S)"} res={validLedgers} /> : <h3>NO VALID LEDGER</h3>}
+        {validLedgers ? <Result title={"ELIGIBLE LEDGER(S)"} res={validLedgers} /> : <h3>NO ELIGIBLE LEDGER</h3>}
 
-        {validTools ? <Result title={"VALID TOOL(S)"} res={validTools} /> : <h3>NO VALID TOOL</h3>}
+        {validTools ? <Result title={"ELIGIBLE TOOL(S)"} res={validTools} /> : <h3>NO ELIGIBLE TOOL</h3>}
 
-        {validLibraries ? <Result title={"VALID LIBRARY(IES)"} res={validLibraries} /> : <h3>NO VALID LIBRARY</h3>}
+        {validLibraries ? <Result title={"ELIGIBLE LIBRARY(IES)"} res={validLibraries} /> : <h3>NO ELIGIBLE LIBRARY</h3>}
 
 
       </section>

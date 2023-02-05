@@ -6,9 +6,8 @@ function GenInfo({allECSum}) {
 
   for (let key in allECSum) {
     // console.log(key);
-    return (
-      <li>{key} : <b>{allECSum[key]}</b></li>
-    )
+    return <li>{key} : <b>{allECSum[key]}</b></li>
+    
   }
 }
 
