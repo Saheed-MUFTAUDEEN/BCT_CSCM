@@ -1,14 +1,20 @@
 import React from 'react'
 
-function GenInfo({allECSum}) {
+function GenInfo({allECSum, ECkey}) {
 
-  console.log("in gen INFO", allECSum);
+  // console.log("in gen INFO", allECSum);
+  // console.log("KEY");
 
-  for (let key in allECSum) {
-    // console.log(key);
-    return <li>{key} : <b>{allECSum[key]}</b></li>
-    
+  // console.log("EC KEYS", Object.keys(allECSum));
+
+  if (allECSum[ECkey] != 0) {
+    return (
+      <>
+        <li> {ECkey} : <b> {allECSum[ECkey]} </b></li>
+      </>
+    )
   }
+
 }
 
 export default GenInfo

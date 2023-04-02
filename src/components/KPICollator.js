@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {kpis} from './bct_use_cases';
 import KPIs from './KPIs';
 import{libraries, tools, ledgers} from './bct_techs'
@@ -15,11 +15,7 @@ function KPICollator() {
   const [validLedgers, setValidLedgers] = useState(null)
   const [validLibraries, setValidLibraries] = useState(null)
   const [allECSum, setAllECSum] = useState ({})
-  // const [ecUnionArr, setEcUnionArr] = useState([])
-  
-  // console.log('RES WITHSUM', resultsWithSum);
 
-  console.log("ALL EC SUMMM", allECSum);
 
   const getAllECSums = (arg) => {
     const ecSums = {}
@@ -27,7 +23,7 @@ function KPICollator() {
       ecSums[each] = 0
     })
     for (let key in arg) {
-      console.log("TEST", arg[key]['sums']);
+      // console.log("TEST", arg[key]['sums']);
       for (let ec in arg[key]['sums']) {
         ecSums[ec] += arg[key]['sums'][ec]
       }
@@ -52,8 +48,6 @@ function KPICollator() {
       });
     }
     const res =  {...arg, sums}
-
-    // console.log("IN THE FUNCTION", res);
     return res
 
   }
@@ -62,7 +56,6 @@ function KPICollator() {
 
     const allECUnion = getECUnion()
 
-    // console.log("IN HANDLE GET RESULT AFTER CALLING GETECUNION", allECUnion);
     for (let key in results) {
 
       if (Object.keys(results[key]).length !== 0) {
@@ -70,8 +63,6 @@ function KPICollator() {
         resultsWithSum[key] = res
       }
     }
-    // setEcUnionArr(allECUnion)
-
     getRightTool(allECUnion)
     getRightLibrary(allECUnion)
     getRightLedger(allECUnion)
@@ -153,7 +144,7 @@ function KPICollator() {
     validTools.sort((a, b) => a[1] - b[1])
 
     setValidTools((validTools.length > 0) ? validTools: null)
-    console.log("VALID TOOLS", validTools);
+    // console.log("VALID TOOLS", validTools);
 
   }
 
@@ -173,7 +164,7 @@ function KPICollator() {
     validLibraries.sort((a, b) => a[1] - b[1])
 
     setValidLibraries((validLibraries.length > 0) ? validLibraries: null)
-    console.log("VALID LIBRARIES", validLibraries);
+    // console.log("VALID LIBRARIES", validLibraries);
 
   }
 
@@ -193,7 +184,7 @@ function KPICollator() {
     validLedgers.sort((a, b) => a[1] - b[1])
 
     setValidLedgers((validLedgers.length > 0) ? validLedgers: null)
-    console.log("VALID LEDGER", validLedgers);
+    // console.log("VALID LEDGER", validLedgers);
 
   }
 
@@ -215,7 +206,14 @@ function KPICollator() {
 
       <section>
 
-        <GenInfo allECSum={allECSum} />
+        <h3>EC COUNT</h3>
+
+        {(Object.keys(allECSum)).map((each, key) => {
+
+          return <GenInfo allECSum={allECSum} ECkey={each} key={key} />
+
+        })}
+
 
         {validLedgers ? <Result title={"ELIGIBLE LEDGER(S)"} res={validLedgers} /> : <h3>NO ELIGIBLE LEDGER</h3>}
 

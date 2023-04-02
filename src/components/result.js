@@ -7,7 +7,7 @@ function Result({res, title}) {
       <div>
         <h3>{title}</h3>
         {res.map((e, index) => {
-          return <li key={index}>{e[1]} with <b>{e[0]}</b> excess EC(s)</li>
+          return <li key={index}>{e[1]}</li>
         })}
       </div>
     )
