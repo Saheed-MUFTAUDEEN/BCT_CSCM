@@ -5,6 +5,8 @@ import{libraries, tools, ledgers} from './bct_techs'
 import Result from './result';
 import GenInfo from './genInfo';
 
+import "../styles.scss"
+
 function KPICollator() {
 
   const allECs = ["EC1", "EC2", "EC3", "EC4", "EC5", "EC6", "EC7", "EC8", "EC9", "EC10", "EC11"]
@@ -193,18 +195,23 @@ function KPICollator() {
 
       {/* <KPIs kpiGroup={kpis[keys[0]]} groupName={keys[0]} addResult={addResult} /> */}
 
-      {keys.map((kpigroup, index) => {
 
-      return (
-        <KPIs key={index} kpiGroup={kpis[kpigroup]} groupName={kpigroup} addResult={addResult} handleGetResult={handleGetResult} />
-      )
-      })}
+      <div className='kpi_container'>
 
-      <button onClick={handleGetResult}>Get Appropriate tool</button>
+        {keys.map((kpigroup, index) => {
+
+          return (
+            <KPIs key={index} kpiGroup={kpis[kpigroup]} groupName={kpigroup} addResult={addResult} handleGetResult={handleGetResult} />
+          
+        )
+        })}
+      </div>
+
+      <button onClick={handleGetResult} id="get_results" >GET RESULTS</button>
 
      
 
-      <section>
+      <section id='results'>
 
         <h3>EC COUNT</h3>
 

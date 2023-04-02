@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { kpis } from './bct_use_cases';
+import "../styles.scss"
+
 
 function KPIs({kpiGroup, groupName, addResult}) {
   // console.log(Object.keys(kpigroup));
 
   const kpi_list = Object.keys(kpiGroup)
   const [selected, setSelected] = useState({})
+  const [showKPIs, setShowKPIs] = useState(false)
 
   const res = {
     [groupName]: selected
@@ -43,21 +46,35 @@ function KPIs({kpiGroup, groupName, addResult}) {
 
   }
 
-  return (
-    <div>
-      <h2>{groupName}</h2>
+  const handleKPIToggle = (e) => {
 
-      {kpi_list.map((kpi, index) => {
-        const val = kpis[groupName][kpi]
-          return (
-            <div key={index}>
-            <p>
-              <input type="checkbox" onClick={checkSelected} value={val} id={kpi} name={kpi}  />
-              <label key={index} htmlFor={kpi} >{(kpi.split("_")).join(" ")}</label>
-            </p>
-            </div>
-          )
-      })}
+    setShowKPIs(!showKPIs)
+  }
+
+  return (
+    <div className='kpi'>
+      <div className='kpi_header'>
+        <h2>{groupName} </h2>
+        <button onClick={handleKPIToggle} > {showKPIs ? "-" : "+"} </button>
+      </div>
+      
+
+      <div className='hide_or_show' style={{ display: showKPIs ? "block": "none" }} >
+        {kpi_list.map((kpi, index) => {
+          const val = kpis[groupName][kpi]
+            return (
+              <div key={index}>
+              <p>
+                <input type="checkbox" onClick={checkSelected} value={val} id={kpi} name={kpi}  />
+                <label key={index} htmlFor={kpi} >{(kpi.split("_")).join(" ")}</label>
+              </p>
+              </div>
+            )
+        })}
+      </div>
+      
+
+
     </div>
   )
 }
