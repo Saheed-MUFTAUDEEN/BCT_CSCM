@@ -17,6 +17,7 @@ function KPICollator() {
   const [validLedgers, setValidLedgers] = useState(null)
   const [validLibraries, setValidLibraries] = useState(null)
   const [allECSum, setAllECSum] = useState ({})
+  const [ECUnion, setECUnion] = useState()
 
 
   const getAllECSums = (arg) => {
@@ -25,14 +26,13 @@ function KPICollator() {
       ecSums[each] = 0
     })
     for (let key in arg) {
-      // console.log("TEST", arg[key]['sums']);
       for (let ec in arg[key]['sums']) {
         ecSums[ec] += arg[key]['sums'][ec]
       }
     }
 
     setAllECSum(ecSums)
-    console.log("GEN EC SUM", ecSums);
+    // console.log("GEN EC SUM", ecSums);
   }
 
   const computeSum = (arg) => {
@@ -50,7 +50,9 @@ function KPICollator() {
       });
     }
     const res =  {...arg, sums}
+    console.log("COMPUTE SUM" + res)
     return res
+
 
   }
 
@@ -58,20 +60,22 @@ function KPICollator() {
 
     const allECUnion = getECUnion()
 
-    for (let key in results) {
+    if (allECUnion.length > 0) {
 
-      if (Object.keys(results[key]).length !== 0) {
-        const res = computeSum(results[key])
-        resultsWithSum[key] = res
+      for (let key in results) {
+  
+        if (Object.keys(results[key]).length !== 0) {
+          const res = computeSum(results[key])
+          resultsWithSum[key] = res
+        }
       }
-    }
-    getRightTool(allECUnion)
-    getRightLibrary(allECUnion)
-    getRightLedger(allECUnion)
-    getAllECSums(resultsWithSum)
-
-
-    // console.log("RES WITH SUM", resultsWithSum);
+  
+      getRightTool(allECUnion)
+      getRightLibrary(allECUnion)
+      getRightLedger(allECUnion)
+      getAllECSums(resultsWithSum)
+    } 
+    
   }
 
   const addResult = (result) => {
@@ -96,97 +100,144 @@ function KPICollator() {
     }
 
     union = [...new Set([...union])]
+    console.log("EC UNION", union);
+    setECUnion(union)
     return union
   }
 
-  const isSubset = (tool, ecs) => {
-    let m = tool.length;
-    let n = ecs.length;
+  // const isSubset = (tool, ecs) => {
+  //   let m = tool.length;
+  //   let n = ecs.length;
+  //   // console.log("SELECTED ECS", ecs);
 
-    let s = new Set();
-    for (let i = 0; i < m; i++)
-    {
-      s.add(tool[i]);
-    }
-    let p = s.size;
-    for (let i = 0; i < n; i++)
-    {
-      s.add(ecs[i]);
-    }
+  //   let s = new Set();
+  //   for (let i = 0; i < m; i++)
+  //   {
+  //     s.add(tool[i]);
+  //   }
+  //   let p = s.size;
+  //   for (let i = 0; i < n; i++)
+  //   {
+  //     s.add(ecs[i]);
+  //   }
     
-    if (s.size === p)
-    {
-      let lengthDiff = m - n
+  //   if (s.size === p)
+  //   {
+  //     let lengthDiff = m - n
       
-      return [lengthDiff]
+  //     return [lengthDiff]
+  //   }
+  //   else
+  //   {
+  //     return null
+  //   }
+  // }
+
+  const getCompatibility = (tech, selectedECs) => {
+
+    let finalRes = []
+    
+    for (let each in tech) {
+      let res = {}
+      let matches = []
+      let misses = []
+      let excess = []
+      selectedECs.forEach(ec => {
+        if (tech[each].includes(ec)) {
+          matches.push(ec)
+        }
+        else {
+          misses.push(ec)
+        }
+      })
+
+      tech[each].forEach(each => {
+        if (!matches.includes(each) && !misses.includes(each)) {
+          excess.push(each)
+        }
+      })
+      res["tech"] = each
+      res["matches"] = matches
+      res["misses"] = misses
+      res["excess"] = excess
+      finalRes.push(res)
+      // console.log("RESULT", res);
     }
-    else
-    {
-      // console.log(`${ecs} is not subset of ${tool}`);
-      return null
-    }
+
+    let sortedRes = finalRes.sort((a, b) => (a["matches"].length < b["matches"].length) ? 1 : (a["matches"].length > b["matches"].length) ? -1 : 0)
+    return sortedRes
   }
+
 
   const getRightTool = (arg) => {
 
-    console.log("EC UNION", arg);
+    const validTools = getCompatibility(tools, arg)
+    console.log("VALID TECH", validTools);
 
-    const validTools = []
+    // valid
 
-    for (let key in tools) {
-      const validTool = isSubset(tools[key], arg)
-      // console.log("SSSSS", validTool);
-      if (validTool) {
-        validTool.push(key)
-        validTools.push(validTool)
-        // console.log('RIGHT KEY', key);
-      }
-    }
+    // arg = allECUnion
+    // console.log("EC UNION", arg);
 
-    validTools.sort((a, b) => a[1] - b[1])
+    // const validTools = []
+    // getCompatibility(tools, arg)
 
-    setValidTools((validTools.length > 0) ? validTools: null)
-    // console.log("VALID TOOLS", validTools);
+    // for (let key in tools) {
 
+      // I should not check if it is subset again.
+      // const validTool = isSubset(tools[key], arg)
+
+      // if (validTool) {
+      //   validTool.push(key)
+      //   validTools.push(validTool)
+      //   // console.log(validTool) // 0 = difference, 1 = tool name
+      // }
+    // }
+
+    // validTools.sort((a, b) => a[1] - b[1])
+
+    setValidTools(validTools)
   }
 
   const getRightLibrary = (arg) => {
 
-    const validLibraries = []
+    const validLibraries = getCompatibility(libraries, arg)
 
-    for (let key in libraries) {
-      const validLibrary = isSubset(libraries[key], arg)
-      // console.log("SSSSS", validTool);
-      if (validLibrary) {
-        validLibrary.push(key)
-        validLibraries.push(validLibrary)
-      }
-    }
 
-    validLibraries.sort((a, b) => a[1] - b[1])
+  //   const validLibraries = []
 
-    setValidLibraries((validLibraries.length > 0) ? validLibraries: null)
-    // console.log("VALID LIBRARIES", validLibraries);
+  //   for (let key in libraries) {
+  //     const validLibrary = isSubset(libraries[key], arg)
+  //     if (validLibrary) {
+  //       validLibrary.push(key)
+  //       validLibraries.push(validLibrary)
+  //     }
+  //   }
+
+  //   validLibraries.sort((a, b) => a[1] - b[1])
+
+    setValidLibraries(validLibraries)
 
   }
 
   const getRightLedger = (arg) => {
 
-    const validLedgers = []
+    const validLedgers = getCompatibility(ledgers, arg)
 
-    for (let key in ledgers) {
-      const validLedger = isSubset(ledgers[key], arg)
-      // console.log("SSSSS", validTool);
-      if (validLedger) {
-        validLedger.push(key)
-        validLedgers.push(validLedger)
-      }
-    }
+    // const validLedgers = []
 
-    validLedgers.sort((a, b) => a[1] - b[1])
+    // for (let key in ledgers) {
+    //   const validLedger = isSubset(ledgers[key], arg)
+    //   if (validLedger) {
+    //     validLedger.push(key)
+    //     validLedgers.push(validLedger)
+    //   }
+    // }
 
-    setValidLedgers((validLedgers.length > 0) ? validLedgers: null)
-    // console.log("VALID LEDGER", validLedgers);
+    // validLedgers.sort((a, b) => a[1] - b[1])
+    // console.log("VALID LEDGERS" + validLedgers);
+
+    setValidLedgers(validLedgers)
 
   }
 
@@ -202,18 +253,15 @@ function KPICollator() {
 
           return (
             <KPIs key={index} kpiGroup={kpis[kpigroup]} groupName={kpigroup} addResult={addResult} handleGetResult={handleGetResult} />
-          
         )
         })}
       </div>
 
       <button onClick={handleGetResult} id="get_results" >GET RESULTS</button>
 
-     
+      <section id='ecCount'>
 
-      <section id='results'>
-
-        <h3>EC COUNT</h3>
+        <h2>EC COUNT</h2>
 
         {(Object.keys(allECSum)).map((each, key) => {
 
@@ -221,15 +269,22 @@ function KPICollator() {
 
         })}
 
-
-        {validLedgers ? <Result title={"ELIGIBLE LEDGER(S)"} res={validLedgers} /> : <h3>NO ELIGIBLE LEDGER</h3>}
-
-        {validTools ? <Result title={"ELIGIBLE TOOL(S)"} res={validTools} /> : <h3>NO ELIGIBLE TOOL</h3>}
-
-        {validLibraries ? <Result title={"ELIGIBLE LIBRARY(IES)"} res={validLibraries} /> : <h3>NO ELIGIBLE LIBRARY</h3>}
-
-
+          
       </section>
+
+      {
+        ECUnion &&
+        <section id='results' >
+  
+            {<Result title={"BEST FIT LEDGER"} res={validLedgers} /> }
+    
+            {<Result title={"BEST FIT TOOL"} res={validTools} /> }
+    
+            {<Result title={"BEST FIT LIBRARY"} res={validLibraries} /> }
+        </section>
+        // <h2>NO ENTRY</h2>
+      }
+
 
       
 
